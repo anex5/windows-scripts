@@ -1,0 +1,1 @@
+"C:\Program Files (x86)\MPlayer for Windows\mplayer.exe" -cache 32768 "rtmp://origin3.stream.highwebmedia.com/live-origin/model-sd-02797dc747293bc2659a427274982a6ccd7be48e1121d08473465ad2cccb13cf"

@@ -1,0 +1,1 @@
+e:\Work\ffmpeg\bin\ffmpeg.exe -f dshow -i video="Vimicro USB2.0 UVC PC Camera" -c:v huffyuv -pix_fmt yuv422p out2.avi
