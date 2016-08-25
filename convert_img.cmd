@@ -17,21 +17,21 @@ if not defined TMPPATH set TMPPATH=%TMP%
 
 set PROCS="%~dp0procs.cmd"
 
-if not exist "%SRCPATH%\*" call %PROCS% DIR_ERROR
-if not exist "%DESTPATH%\*" ( md "%DESTPATH%" || exit /b )
-if not exist "%TMPPATH%\*" ( md "%TMPPATH%" || exit /b )
+if not exist "%SRCPATH%" call %PROCS% DIR_ERROR
+if not exist "%DESTPATH%" ( md "%DESTPATH%" || exit /b )
+if not exist "%TMPPATH%" ( md "%TMPPATH%" || exit /b )
 if /i "%SRCPATH%" equ "%DESTPATH%" call %PROCS% ERROR_SELF
 
-set TEMPFILENAME=%TMPPATH%\_.bpg
+set TEMPFILENAME="%TMPPATH%\_.bpg"
 
 :: Main cycle
-if exist %TMPPATH%\Failed.txt ( del /q /s %TMPPATH%\Failed.txt 2>NUL )
-call %PROCS% PROCDIR "%SRCPATH%" "\.*.zip$ \.*.rar$" "call :EXTRACT_FILE ^"%%%%~I^" %%DESTPATH%%"
-call %PROCS% PROCDIR "%DESTPATH%" "\.*.jpg$ \.*.png$" "call :ENCODE_FILE ^"%%%%~I^" ^"%%%%~dpnI.bpg^" %%TEMPFILENAME%%"
+::if exist %TMPPATH%\Failed.txt ( del /q /s %TMPPATH%\Failed.txt 2>NUL )
+::call %PROCS% PROCDIR "%SRCPATH%" "\.*.zip$ \.*.rar$" "call :EXTRACT_FILE ^"%%%%~I^" "%DESTPATH%" "%%%%SRCPATH%%%%""
+call %PROCS% PROCDIR "%DESTPATH%" "\.*.jpg$ \.*.png$" "call :ENCODE_FILE ^"%%%%~I^" ^"%%%%~dpnI.bpg^" %TEMPFILENAME%"
 ::call %PROCS% PROCDIR "%DESTPATH%" "\.*.bpg$" "if exist "^%%%%~dpnI.jpg^" del /q /s ^"%%%%~dpnI.jpg^" & if exist "^%%%%~dpnI.png^" del /q /s ^"%%%%~dpnI.png^""
 
 if exist "%TEMPFILENAME%" ( del /q /s "%TEMPFILENAME%" 2>NUL )
-type %TMPPATH%\Failed.txt 2>NUL
+::type %TMPPATH%\Failed.txt 2>NUL
 echo.&pause&goto:eof
 
 :PRINT_USAGE

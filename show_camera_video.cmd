@@ -1,0 +1,1 @@
+"C:\Program Files (x86)\MPlayer for Windows\mplayer.exe" -tv driver=dshow:device=0:adevice=0:audioid=1:input=2:immediatemode=0 tv://
