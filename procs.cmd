@@ -133,6 +133,12 @@ exit /b !ERRORLEVEL!
 	ENDLOCAL & IF "%~2" NEQ "" SET %~2=%str%                  
 exit /b !ERRORLEVEL!
 
+:NEWDATENAME
+    for /f "delims=:., tokens=1-4" %%m in ("%TIME: =0%") do (
+        echo %1-%date:~6,4%-%date:~3,2%-%date:~0,2%-%%m%%n%%o%%p
+    )
+exit /b !ERRORLEVEL!
+
 :UNQ
   if [%1] == [] call :ERROR_ARG %*
   IF "%~2" NEQ "" set %1=%~2
