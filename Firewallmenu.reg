@@ -1,0 +1,60 @@
+Windows Registry Editor Version 5.00 
+
+;Copyright 2016 Trottle 
+;This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License version 3. 
+;This program is distributed WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+;See <http://www.gnu.org/licenses/> for more details. 
+
+[-HKEY_CLASSES_ROOT\exefile\shell\FWc] 
+
+[HKEY_CLASSES_ROOT\exefile\shell\FWc] 
+"MUIVerb"="Set firewall rules" 
+"Icon"="imageres.dll,102" 
+"subcommands"=""
+
+[HKEY_CLASSES_ROOT\exefile\shell\FWc\shell\01] 
+"MUIVerb"="block inbound" 
+"Icon"="imageres.dll,100" 
+
+[HKEY_CLASSES_ROOT\exefile\shell\FWc\shell\01\command] 
+@="cmd /q /c echo CreateObject(\"Shell.Application\").ShellExecute \"cmd\", \"/q /c chcp 1251 & netsh advfirewall firewall add rule name=\"\"%1\"\" dir=in action=block program=\"\"%1\"\" enable=yes | msg * \", \"\", \"runas\" > %%temp%%\\ev.vbs & cscript %%temp%%\\ev.vbs & del %%temp%%\\ev.vbs" 
+
+[HKEY_CLASSES_ROOT\exefile\shell\FWc\shell\02] 
+"MUIVerb"="allow inbound" 
+"Icon"="imageres.dll,101" 
+
+[HKEY_CLASSES_ROOT\exefile\shell\FWc\shell\02\command] 
+@="cmd /q /c echo CreateObject(\"Shell.Application\").ShellExecute \"cmd\", \"/q /c chcp 1251 & netsh advfirewall firewall add rule name=\"\"%1\"\" dir=in action=allow program=\"\"%1\"\" enable=yes | msg * \", \"\", \"runas\" > %%temp%%\\ev.vbs & cscript %%temp%%\\ev.vbs & del %%temp%%\\ev.vbs" 
+
+[HKEY_CLASSES_ROOT\exefile\shell\FWc\shell\03] 
+"Icon"="imageres.dll,100" 
+"MUIVerb"="block outbound" 
+
+[HKEY_CLASSES_ROOT\exefile\shell\FWc\shell\03\command] 
+@="cmd /q /c echo CreateObject(\"Shell.Application\").ShellExecute \"cmd\", \"/q /c chcp 1251 & netsh advfirewall firewall add rule name=\"\"%1\"\" dir=out action=block program=\"\"%1\"\" enable=yes | msg * \", \"\", \"runas\" > %%temp%%\\ev.vbs & cscript %%temp%%\\ev.vbs & del %%temp%%\\ev.vbs" 
+
+[HKEY_CLASSES_ROOT\exefile\shell\FWc\shell\04] 
+"MUIVerb"="allow outbound" 
+"Icon"="imageres.dll,101" 
+"CommandFlags"=dword:00000040
+
+[HKEY_CLASSES_ROOT\exefile\shell\FWc\shell\04\command] 
+@="cmd /q /c echo CreateObject(\"Shell.Application\").ShellExecute \"cmd\", \"/q /c chcp 1251 & netsh advfirewall firewall add rule name=\"\"%1\"\" dir=out action=allow program=\"\"%1\"\" enable=yes | msg * \", \"\", \"runas\" > %%temp%%\\ev.vbs & cscript %%temp%%\\ev.vbs & del %%temp%%\\ev.vbs" 
+
+[HKEY_CLASSES_ROOT\exefile\shell\FWc\shell\06] 
+"MUIVerb"="Show firewall panel" 
+"Icon"="imageres.dll,109" 
+
+[HKEY_CLASSES_ROOT\exefile\shell\FWc\shell\06\command] 
+@="mmc.exe wf.msc" 
+
+; If you do not want to have uninstaller you can skip next part: 
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FWcSubMenu] 
+"DisplayName"="'Set firewall rules' submenu" 
+"DisplayIcon"="imageres.dll,102" 
+"UninstallString"="cmd /q /c echo Windows Registry Editor Version 5.00>%TEMP%\\pr.reg & echo.>>%TEMP%\\pr.reg & echo [-HKEY_CLASSES_ROOT\\exefile\\shell\\FWc]>>%TEMP%\\pr.reg & echo.>>%TEMP%\\pr.reg & echo [-HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\FWcSubMenu]>>%TEMP%\\pr.reg & regedit /s %TEMP%\\pr.reg & del %TEMP%\\pr.reg" 
+"DisplayVersion"="1.1" 
+"URLInfoAbout"="http://habrahabr.ru/post/317802/" 
+"NoModify"=dword:00000001 
+"NoRepair"=dword:00000001 
