@@ -43,6 +43,41 @@ echo."\Microsoft\Windows\Media Center\ReindexSearchRoot">> %FN%
 echo."\Microsoft\Windows\Media Center\SqlLiteRecoveryTask">> %FN%
 echo."\Microsoft\Windows\Media Center\UpdateRecordPath" >> %FN%
 
+echo."Microsoft\Windows\Speech\SpeechModelDownloadTask">> %FN%
+echo."Microsoft\Windows\SpacePort\SpaceAgentTask">> %FN%
+echo."Microsoft\Windows\SpacePort\SpaceManagerTask">> %FN%
+echo."Microsoft\Windows\NlaSvc\WiFiTask">> %FN%
+echo."Microsoft\Windows\WCM\WiFiTask">> %FN%
+echo."Microsoft\Windows\Management\Provisioning\Logon">> %FN%
+echo."Microsoft\Windows\License Manager\TempSignedLicenseExchange">> %FN%
+echo."Microsoft\Windows\ErrorDetails\EnableErrorDetailsUpdate">> %FN%
+echo."Microsoft\Windows\ErrorDetails\ErrorDetailsUpdate">> %FN%
+echo."Microsoft\Windows\DUSM\dusmtask">> %FN%
+echo."Microsoft\XblGameSave\XblGameSaveTask">> %FN%
+echo."Microsoft\XblGameSave\XblGameSaveTaskLogon">> %FN%
+echo."Microsoft\Windows\Device Information\Device">> %FN%
+echo."Microsoft\Windows\ApplicationData\appuriverifierinstall">> %FN%
+echo."Microsoft\Windows\ApplicationData\appuriverifierdaily">> %FN%
+echo."Microsoft\Windows\Windows Media Sharing\UpdateLibrary">> %FN%
+echo."Microsoft\Windows\WDI\ResolutionHost">> %FN%
+echo."Microsoft\Windows\Mobile Broadband Accounts\MNO Metadata Parser">> %FN%
+echo."Microsoft\Windows\Location\Notifications">> %FN%
+echo."Microsoft\Windows\Location\WindowsActionDialog">> %FN%
+echo."Microsoft\Windows\RetailDemo\CleanupOfflineContent">> %FN%
+echo."Microsoft\Windows\Windows Error Reporting\QueueReporting">> %FN%
+echo."Microsoft\Windows\Shell\FamilySafetyMonitor">> %FN%
+echo."Microsoft\Windows\Shell\FamilySafetyMonitorToastTask">> %FN%
+echo."Microsoft\Windows\Shell\FamilySafetyRefreshTask">> %FN%
+echo."Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem">> %FN%
+echo."Microsoft\Windows\Maintenance\WinSAT">> %FN%
+echo."Microsoft\Windows\FileHistory\File History (maintenance mode)">> %FN%
+echo."Microsoft\Windows\Data Integrity Scan\Data Integrity Scan">> %FN%
+echo."Microsoft\Windows\Data Integrity Scan\Data Integrity Scan for Crash Recovery">> %FN%
+echo."Microsoft\Windows\DiskFootprint\StorageSense">> %FN%
+echo."Microsoft\Windows\DiskFootprint\Diagnostics">> %FN%
+echo."Microsoft\Windows\DiskCleanup\SilentCleanup">> %FN%
+
+
 for /f "tokens=* delims=," %%f in (.\%FN%) do (
   @echo.Отключение %%f  
   start "" /b /w %WINDIR%\SysWOW64\schtasks.exe /Change /TN %%f /DISABLE
