@@ -1,4 +1,5 @@
 @echo off
+@chcp 65001
 setlocal enableextensions enabledelayedexpansion
 
 set SRCDIR=%~1
@@ -11,7 +12,7 @@ for /f "usebackq tokens=* delims=" %%I in ( `dir /b /s /a:-d "%SRCDIR%\*" 2^>NUL
     set INSTALLER_PATH="%%~dpI"
 )
 
-@echo.Устанавливаю MPC-HC %INSTALLER_EXENAME%
-if exist "%INSTALLER%" ( start "" /b /w "%INSTALLER%" /SILENT /LOG="mpc-hc-install.log" ) else ( @echo.Инсталлятор не найден в директории %SRCDIR% )
-if !ERRORLEVEL! NEQ 0 ( @echo.Выполнение прервано. Ошибка:!errorlevel! )
+@echo.╨г╤Б╤В╨░╨╜╨░╨▓╨╗╨╕╨▓╨░╤О MPC-HC %INSTALLER_EXENAME%
+if exist "%INSTALLER%" ( start "" /b /w "%INSTALLER%" /SILENT /LOG="mpc-hc-install.log" ) else ( @echo.╨Ш╨╜╤Б╤В╨░╨╗╨╗╤П╤В╨╛╤А ╨╜╨╡ ╨╜╨░╨╣╨┤╨╡╨╜ ╨▓ ╨┤╨╕╤А╨╡╨║╤В╨╛╤А╨╕╨╕ %SRCDIR% )
+if !ERRORLEVEL! NEQ 0 ( @echo.╨Т╤Л╨┐╨╛╨╗╨╜╨╡╨╜╨╕╨╡ ╨┐╤А╨╡╤А╨▓╨░╨╜╨╛. ╨Ю╤И╨╕╨▒╨║╨░:!errorlevel! )
 echo.&pause&goto:eof
