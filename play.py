@@ -8,7 +8,8 @@ import sys
 import argparse
 import re
 
-parser = argparse.ArgumentParser()                                               
+
+parser = argparse.ArgumentParser()
 parser.add_argument("--file", "-f", type=str, required=True)
 parser.add_argument("--delay", "-d", type=int, required=False)
 
@@ -300,7 +301,8 @@ class WindowMgr:
     WM_CLOSE = 16
     WM_DESTROY = 2
     WM_KEYDOWN = 256
-    WM_KEYUP = 0x0101
+    WM_KEYUP = 257
+    WM_CHAR = 0x0102
     WM_LBUTTONDOWN = 513
     WM_MBUTTONDOWN = 519
     WM_MOUSEMOVE = 512
@@ -315,6 +317,12 @@ class WindowMgr:
         """Constructor"""
         self._handle = None
 
+    def ZeroChk (self, result):
+        print(result)
+        if result != 0:
+            raise ctypes.WinError(ctypes.windll.kernel32.GetLastError())
+        return result
+
     def find_window(self, class_name, window_name = None):
         """find a window by its class_name"""
         self._handle = ctypes.windll.user32.FindWindow(class_name, window_name)
@@ -325,34 +333,38 @@ class WindowMgr:
         buff = ctypes.create_unicode_buffer(length)
         ctypes.windll.user32.GetWindowTextW(hwnd, buff, length)
         wintitle = ctypes.cast(buff, ctypes.c_wchar_p).value.encode('utf-8', 'replace')
-          
+        #print("len =", length, repr(buff.value))
         if re.match(wildcard, wintitle) != None:
+            #print(repr(buff.value))
             self._handle = hwnd
-            
+        return True
 
     def find_window_wildcard(self, wildcard):
         self._handle = None
         enum_windows_proc = \
                 ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int))
-        ctypes.windll.user32.EnumWindows(enum_windows_proc(self._window_enum_callback), wildcard)
+        self.ZeroChk(ctypes.windll.user32.EnumWindows(enum_windows_proc(self._window_enum_callback), wildcard)-1)
 
     def set_foreground(self):
         """put the window in the foreground"""
-        #ctypes.windll.user32.ShowWindow(self._handle, self.SW_SHOW); 
-        #ctypes.windll.user32.BringWindowToTop(self._handle);
-        ctypes.windll.user32.SetForegroundWindow(self._handle)
+        ctypes.windll.user32.ShowWindow(self._handle, self.SW_SHOWNORMAL);
+        ctypes.windll.user32.BringWindowToTop(self._handle);
+        self.ZeroChk(ctypes.windll.user32.SetForegroundWindow(self._handle)-1)
 
     def send_keypress(self, code, flags=0):
-        ctypes.windll.user32.SendMessageW(self._handle, self.WM_KEYDOWN, code, 0)
-
-        ctypes.windll.user32.SendMessageW(self._handle, self.WM_KEYUP, code, 65539)
-
+        hwnd = self._handle
+        #hwnd = ctypes.windll.user32.GetForegroundWindow()
+        #print("hwnd:", hwnd, "self:", ctypes.cast(self._handle, ctypes.c_void_p).value)
+        #self.ZeroChk(ctypes.windll.user32.PostMessageW(hwnd, self.WM_KEYDOWN, code, ctypes.windll.user32.MapVirtualKeyW(code, 1)) - 1)
+        self.ZeroChk(ctypes.windll.user32.PostMessageW(hwnd, self.WM_CHAR, code, ctypes.windll.user32.MapVirtualKeyW(code, 1)) - 1)
+        time.sleep(0.1)
+        #self.ZeroChk(ctypes.windll.user32.PostMessageW(hwnd, self.WM_KEYUP, code, 65539) - 1)
 
 def main():
     args = parser.parse_args()
 
     w = WindowMgr()
-    w.find_window_wildcard("Б.*")
+    w.find_window_wildcard("Deus Ex: Revision")
     w.set_foreground()
     delay = 10
 
@@ -366,7 +378,6 @@ def main():
                 for x,y,code in sdata:
                     print(x,y,code)
 
-                    
                     time.sleep(int(delay)/1000)
                         
             elif int(evt, 16)==INPUT_KEYBOARD:    
