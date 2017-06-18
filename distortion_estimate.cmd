@@ -1,0 +1,1 @@
+convert E:\Temp\Honeyview_fd__tre_1900.jpg -distort Barrel "-0.0 -0.165 -0.0 1.165" -fx "p{ i*(1+1*(i/w)^2), j }" result.jpg
