@@ -11,7 +11,7 @@ import re
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--file", "-f", type=str, required=True)
-parser.add_argument("--delay", "-d", type=int, required=False)
+parser.add_argument("--title", "-t", type=str, required=True)
 
 LONG = ctypes.c_long
 DWORD = ctypes.c_ulong
@@ -318,8 +318,8 @@ class WindowMgr:
         self._handle = None
 
     def ZeroChk (self, result):
-        print(result)
-        if result != 0:
+        if result == 0:
+            print(result)
             raise ctypes.WinError(ctypes.windll.kernel32.GetLastError())
         return result
 
@@ -334,43 +334,53 @@ class WindowMgr:
         ctypes.windll.user32.GetWindowTextW(hwnd, buff, length)
         wintitle = ctypes.cast(buff, ctypes.c_wchar_p).value.encode('utf-8', 'replace')
         #print("len =", length, repr(buff.value))
-        if re.match(wildcard, wintitle) != None:
+        #if re.search(wildcard, wintitle) is not None:
+        if wintitle.endswith(wildcard):
             #print(repr(buff.value))
             self._handle = hwnd
-        return True
+            return True
+        else:
+            return False
 
     def find_window_wildcard(self, wildcard):
         self._handle = None
         enum_windows_proc = \
                 ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int))
-        self.ZeroChk(ctypes.windll.user32.EnumWindows(enum_windows_proc(self._window_enum_callback), wildcard)-1)
+        self.ZeroChk(ctypes.windll.user32.EnumWindows(enum_windows_proc(self._window_enum_callback), wildcard))
 
     def set_foreground(self):
         """put the window in the foreground"""
         ctypes.windll.user32.ShowWindow(self._handle, self.SW_SHOWNORMAL);
         ctypes.windll.user32.BringWindowToTop(self._handle);
-        self.ZeroChk(ctypes.windll.user32.SetForegroundWindow(self._handle)-1)
+        self.ZeroChk(ctypes.windll.user32.SetForegroundWindow(self._handle))
 
-    def send_keypress(self, code, flags=0):
+    def send_keypress(self, vkCode, flags=0):       
         hwnd = self._handle
+        #keyState = ctypes.windll.user32.GetAsyncKeyState(vkCode)
+        if vkCode==0x101: 
+            lParam = 0x31
+        else:
+            lParam = 0
         #hwnd = ctypes.windll.user32.GetForegroundWindow()
         #print("hwnd:", hwnd, "self:", ctypes.cast(self._handle, ctypes.c_void_p).value)
-        #self.ZeroChk(ctypes.windll.user32.PostMessageW(hwnd, self.WM_KEYDOWN, code, ctypes.windll.user32.MapVirtualKeyW(code, 1)) - 1)
-        self.ZeroChk(ctypes.windll.user32.PostMessageW(hwnd, self.WM_CHAR, code, ctypes.windll.user32.MapVirtualKeyW(code, 1)) - 1)
-        time.sleep(0.1)
+        #print("key state: ",keyState)
+        self.ZeroChk(ctypes.windll.user32.PostMessageW(hwnd, flags, vkCode, lParam))
+        #self.ZeroChk(ctypes.windll.user32.PostMessageW(hwnd, self.WM_CHAR, code, ctypes.windll.user32.MapVirtualKeyW(code, 1)))
+        #time.sleep(0.1)
         #self.ZeroChk(ctypes.windll.user32.PostMessageW(hwnd, self.WM_KEYUP, code, 65539) - 1)
 
 def main():
     args = parser.parse_args()
 
     w = WindowMgr()
-    w.find_window_wildcard("Deus Ex: Revision")
+    w.find_window_wildcard(args.title) #"Deus Ex: Revision"
     w.set_foreground()
     delay = 10
 
     try:
         file = open(args.file, 'r')
         for line in file.readlines():
+            if line.startswith(("#",",",":","/n")): continue
             evt,flags,data,hold = line.split(",")
             
             sdata = data.split(":")
@@ -382,17 +392,14 @@ def main():
                         
             elif int(evt, 16)==INPUT_KEYBOARD:    
                 for code in sdata:
-                    print(code)
-                    w.send_keypress(code, flags)
+                    print(code, flags)
+                    #send_input(Keyboard(int(code,16),int(flags,16)-0x100))
+                    w.send_keypress(int(code,16), int(flags,16))
                     time.sleep(int(delay)/1000)
             
-            time.sleep(int(hold)/1000)
-
-
-            
+            time.sleep(int(hold)/1000)        
     finally:
         file.close()
        
-
 if __name__ == '__main__':
     main()
