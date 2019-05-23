@@ -1,0 +1,1 @@
+bcdedit /set increaseuserva 12288
