@@ -27,7 +27,7 @@ set TEMPFILENAME="%TMPPATH%\_.bpg"
 :: Main cycle
 ::if exist %TMPPATH%\Failed.txt ( del /q /s %TMPPATH%\Failed.txt 2>NUL )
 ::call %PROCS% PROCDIR "%SRCPATH%" "\.*.zip$ \.*.rar$" "call :EXTRACT_FILE ^"%%%%~I^" "%DESTPATH%" "%%%%SRCPATH%%%%""
-call %PROCS% PROCDIR "%DESTPATH%" "\.*.jpg$ \.*.png$" "call :ENCODE_FILE ^"%%%%~I^" ^"%%%%~dpnI.bpg^" %TEMPFILENAME%"
+call %PROCS% PROCDIR "%SRCPATH%" "\.*.jpg$ \.*.png$" "call :ENCODE_FILE ^"%%%%~I^" ^"%DESTPATH%/%%%%~nI.webp^" %TEMPFILENAME%"
 ::call %PROCS% PROCDIR "%DESTPATH%" "\.*.bpg$" "if exist "^%%%%~dpnI.jpg^" del /q /s ^"%%%%~dpnI.jpg^" & if exist "^%%%%~dpnI.png^" del /q /s ^"%%%%~dpnI.png^""
 
 if exist "%TEMPFILENAME%" ( del /q /s "%TEMPFILENAME%" 2>NUL )

@@ -88,7 +88,7 @@ exit /b !ERRORLEVEL!
 	set size=0
 	set encode_cmd="d:\Tools\bpg-0.9.6-win64\bpgenc.exe"
 	set "encode_keys=-q 32 -limitedrange -b 8 -m 8 -e x265 -o"
-	set reencoder="c:\Program Files\ImageMagick-6.9.2-Q16-HDRI\convert.exe"
+	set reencoder="c:\Program Files\GraphicsMagick-1.3.33-Q16\gm.exe"
 
 	set FILENAME="%~1"
 	set OUTPUTFILENAME="%~2"
@@ -98,25 +98,25 @@ exit /b !ERRORLEVEL!
 	echo.Encoding file %FILENAME%
 
 	::%reencoder% -alpha off -strip -mattecolor white -background white -layers Dispose -format png -quality 98 %FILENAME% %TEMPFILENAME1%
-
-	::if errorlevel 1 ( @echo.ERROR! Process %reencoder% failed. Code: %errorlevel% ) 
-	copy %FILENAME% %TEMPFILENAME1%
-	%encode_cmd% %TEMPFILENAME1% %encode_keys% %TEMPFILENAME%
+	%reencoder% convert -define webp:method=6,target-psnr=92,pass=2,thread-level=2,image-hint=photo,filter-type=0,filter-strength=50,preprocessing=2 %FILENAME% %OUTPUTFILENAME%
+	if errorlevel 1 ( @echo.ERROR! Process %reencoder% failed. Code: %errorlevel% ) 
+	rem copy %FILENAME% %TEMPFILENAME1%
+	rem %encode_cmd% %TEMPFILENAME1% %encode_keys% %TEMPFILENAME%
 	
-	call :GETFILEINFO z %TEMPFILENAME% size
+	rem call :GETFILEINFO z %TEMPFILENAME% size
 	
-	if errorlevel 1 (
-		@echo.ERROR! Process %encode_cmd% failed. Code: %errorlevel%
-	) else (
-		if %size% LSS 50 (
-			echo.Ouput size: %size%. Encoding failed!
-			echo.%FILENAME%>>%TMPPATH%\Failed.txt
-		) else (
-			echo.Ready. Ouput size: %size%. %OUTPUTFILENAME%
-			copy %TEMPFILENAME% %OUTPUTFILENAME%
-			del /q /s %FILENAME%
-		)
-	)
+	::if errorlevel 1 (
+	::	@echo.ERROR! Process %encode_cmd% failed. Code: %errorlevel%
+	::) else (
+	::	if %size% LSS 50 (
+	::		echo.Ouput size: %size%. Encoding failed!
+	::		echo.%FILENAME%>>%TMPPATH%\Failed.txt
+	::	) else (
+	::		echo.Ready. Ouput size: %size%. %OUTPUTFILENAME%
+	::		copy %TEMPFILENAME% %OUTPUTFILENAME%
+	::		del /q /s %FILENAME%
+	::	)
+	::)
 	endlocal
 exit /b !ERRORLEVEL!
 

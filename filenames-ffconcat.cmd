@@ -10,7 +10,6 @@ if not defined DESTPATH set DESTPATH=%cd%
 
 set PATTERN=%~3
 if not defined PATTERN set PATTERN="\b*"
-rem if not defined PATTERN set PATTERN="himawari08_2017.*.jpg"
 
 set PROCS="%~dp0procs.cmd"
 
