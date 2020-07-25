@@ -177,9 +177,7 @@ exit /b !ERRORLEVEL!
 exit /b !ERRORLEVEL!
 
 :NEWDATENAME
-    for /f "delims=:., tokens=1-4" %%m in ("%TIME: =0%") do (
-        @echo.%~1-%date:~6,4%-%date:~3,2%-%date:~0,2%-%%m%%n%%o%%p%~2
-    )
+    @echo.%~1-%date:~6,4%-%date:~3,2%-%date:~0,2%_%time:~0,2%-%time:~3,2%-%time:~6,2%.%time:~9,2%~2
 exit /b !ERRORLEVEL!
 
 :DAYNUM
