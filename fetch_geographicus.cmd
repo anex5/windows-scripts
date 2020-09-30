@@ -18,7 +18,7 @@ for /f %%a in ('copy /Z "%~f0" nul') do set "CR=%%a"
 
 rem set "url=https://gallica.bnf.fr/iiif/ark:/12148/btv1b8447838j"	
 rem set "url=https://gallica.bnf.fr/iiif/ark:/12148/btv1b23006724"	
-set "url=https://media.davidrumsey.com/MediaManager/srvr?mediafile=/JP2K/RUMSEY~8~1/179/10130087.jp2"
+set "url=https://www.geographicus.com/mm5/graphics/00000001/zoomify/PrimitivWorldNavigation-sales-1770/TileGroup0"
 set "testfnw=%Temp%/test_tile_w.jpg"
 set "testfnh=%Temp%/test_tile_h.jpg"
 
@@ -30,22 +30,22 @@ for /L %%G in (%PAGES%) do (
     @echo."%DSTDIR%\%%G"
     set "purl=%url%"
     
-    rem set /a WT=5888
-    rem set /a HT=8448
-    set /a WT=62000
-    set /a HT=62000
-    set /a TD=750
+    set /a WT=2816
+    set /a HT=1792
+    set /a TD=256
     set /a TDI=!TD!
     set /a TDJ=!TD!
+    set /a TI=!WT! / !TD!
+    set /a TJ=!HT! / !TD!
 
 	@echo.Determine width
-	curl -fsS -A !USERAGENT! -o !testfnw! "!purl!&x=!WT!&y=0&width=!TD!&height=!TD!&level=0" || (
+	curl -fsS -A !USERAGENT! -o !testfnw! "!purl!/4-!TI!-0.jpg" || (
 		set /a WT = !WT! - !TD!
-		curl -fsS -A !USERAGENT! -o !testfnw! "!purl!&x=!WT!&y=0&width=!TD!&height=!TD!&level=0" || (
+		curl -fsS -A !USERAGENT! -o !testfnw! "!purl!/4-!TI!-0.jpg" || (
 			set /a WT = !WT! - !TD!
-			curl -fsS -A !USERAGENT! -o !testfnw! "!purl!&x=!WT!&y=0&width=!TD!&height=!TD!&level=0" || (
+			curl -fsS -A !USERAGENT! -o !testfnw! "!purl!/4-!TI!-0.jpg" || (
 				set /a WT = !WT! - !TD!
-				curl -fsS -A !USERAGENT! -o !testfnw! "!purl!&x=!WT!&y=0&width=!TD!&height=!TD!&level=0" || @echo.Process failed. Error:!ERRORLEVEL!
+				curl -fsS -A !USERAGENT! -o !testfnw! "!purl!/4-!TI!-0.jpg" || @echo.Process failed. Error:!ERRORLEVEL!
 			)
 		)
 	)
@@ -69,13 +69,13 @@ for /L %%G in (%PAGES%) do (
 
 	@echo.Determine height
 
-	curl -fsS -A !USERAGENT! -o !testfnh! "!purl!&x=0&y=!HT!&width=!TD!&height=!TD!&level=0" || (
+	curl -fsS -A !USERAGENT! -o !testfnh! "!purl!/4-0-!TJ!.jpg" || (
 		set /a HT = !HT! - !TD!
-		curl -fsS -A !USERAGENT! -o !testfnh! "!purl!&x=0&y=!HT!&width=!TD!&height=!TD!&level=0" || (
+		curl -fsS -A !USERAGENT! -o !testfnh! "!purl!/4-0-!TJ!.jpg" || (
 			set /a HT = !HT! - !TD!
-			curl -fsS -A !USERAGENT! -o !testfnh! "!purl&x=0&y=!HT!&width=!TD!&height=!TD!&level=0" || (
+			curl -fsS -A !USERAGENT! -o !testfnh! "!purl!/4-0-!TJ!.jpg" || (
 				set /a HT = !HT! - !TD!
-				curl -fsS -A !USERAGENT! -o !testfnh! "!purl!&x=0&y=!HT!&width=!TD!&height=!TD!&level=0" || @echo.Process failed. Error:!ERRORLEVEL!
+				curl -fsS -A !USERAGENT! -o !testfnh! "!purl!/4-0-!TJ!.jpg" || @echo.Process failed. Error:!ERRORLEVEL!
 			)
 		)
 	)
@@ -112,7 +112,7 @@ for /L %%G in (%PAGES%) do (
     for /f %%a in ( '2^>nul dir "%DSTDIR%/%%G" /a-d/b/-o/-p/s^|find /v /c ""') do set /a n=%%a
 
     @echo.Assembling !n! files. Please wait...
-    gm montage -mode concatenate -tile !WTC!x!HTC! "%DSTDIR%/%%G/*.jp2" "%DSTDIR%/%NAME% - %%G.jpg" || @echo.Process failed. Error:!ERRORLEVEL!
+    gm montage -mode concatenate -tile !WTC!x!HTC! "%DSTDIR%/%%G/*.jpg" "%DSTDIR%/%NAME% - %%G.jpg" || @echo.Process failed. Error:!ERRORLEVEL!
 )
 
 goto :EOF
@@ -130,7 +130,7 @@ for (i = 0; i < wtc; i++) {
 	for (j = 0; j < htc; j++) {
 		if ( i == wtc-1 & w % td > 0 ) { tdi = w % td; } else { tdi = td };
 		if ( j == htc-1 & h % td > 0 ) { tdj = h % td; } else { tdj = td };
-    	WSH.Echo(('00000' + j*td).slice(-6)+"_"+('00000' + i*td).slice(-6)+".jp2 "+WSH.Arguments(0)+"&x="+Number(i*td)+"&y="+Number(j*td)+"&width="+tdi+"&height="+tdj+"&level=0");
+    	WSH.Echo(('00000' + j*td).slice(-6)+"_"+('000000' + i*td).slice(-6)+".jpg "+WSH.Arguments(0)+"/4-"+Number(i)+"-"+Number(j)+".jpg");
     }
 }
         
